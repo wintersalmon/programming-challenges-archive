@@ -49,6 +49,7 @@ target_subcategory=$2
 target_directory="$BASE_DIRECTORY/$target_category/$target_subcategory"
 target_name="$target_category"_"$target_subcategory"
 
+echo "RUNNING $target_name"
 case_dirs=$(find $target_directory -name '*.in.txt')
 for dir in $case_dirs; do
     data_directory=$(dirname $dir)
@@ -56,7 +57,7 @@ for dir in $case_dirs; do
     
     # case is not number
     if ! [[ $case_number =~ $RE_NUMBER ]] ; then
-        case_number="'default'"
+        case_number="default"
     fi
 
     # if not all is selected only run case matching target number
@@ -68,3 +69,4 @@ for dir in $case_dirs; do
 
 done
 
+echo "COMPLETE"
