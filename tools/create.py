@@ -18,6 +18,10 @@ def get_or_create_dir(*paths, mode=0o755):
 
 
 def create(judge_alias, problem_id):
+    print('Download & Create {} {}'.format(judge_alias, problem_id))
+    if input('Press ENTER to continue: '):
+        return
+
     with open('.secret.json', 'r') as secret_file:
         data = json.load(secret_file)
         api = APIUdebug(**data)
