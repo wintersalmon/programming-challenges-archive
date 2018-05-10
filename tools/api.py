@@ -70,10 +70,6 @@ def load_username_and_password(file_path):
 
 
 def main():
-    # username, password = load_username_and_password('../.secret.json')
-    #
-    # api = APIUdebug(username=username, password=password)
-
     api = APIUdebug.load_from_file('../.secret.json')
 
     judge_alias = 'uva'
