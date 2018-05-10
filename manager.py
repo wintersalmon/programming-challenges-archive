@@ -4,12 +4,12 @@ from tools.create import create
 from tools.run import run_all_script
 
 
-# def show_usage(error_msg=None):
-#     if error_msg:
-#         print(error_msg)
-#     # print("main.py play <package> [--cli]    # create new game")
-#     # print("main.py replay <package> [--cli]  # load saved game in replay mode")
-#     # print("    --cli: load game in CLI(command line interface) mode")
+def show_usage(error_msg=None):
+    if error_msg:
+        print(error_msg)
+    print("manager.py run <judge_name> <problem_num> [case_num] # find and run all cases or specific case")
+    print("manager.py new <judge_name> <problem_num>  # find judge_problem online and create and download all cases")
+
 
 def main():
     command = sys.argv[1]
@@ -22,7 +22,7 @@ def main():
     elif command == 'new':
         create(judge_alias, problem_id)
     else:
-        print('Invalid command', command)
+        show_usage('Invalid command: {}'.format(command))
         exit(1)
 
 
