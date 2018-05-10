@@ -36,32 +36,41 @@ def create(judge_alias, problem_id):
     src_root_dir = get_or_create_dir(SRC_DIR, judge_alias, problem_id)
     src_file_path = os.path.join(src_root_dir, '{}_{}.py'.format(judge_alias, problem_id))
 
-    print('NEW {}_{} {} cases'.format(judge_alias, problem_id, len(conf['cases'])))
+    print('new {}_{} {} cases'.format(judge_alias, problem_id, len(conf['cases'])))
 
-    with open(conf_file_path, 'w') as conf_file:
-        json.dump(conf, conf_file)
+    if not os.path.exists(conf_file_path):
+        print('new', conf_file_path)
+        with open(conf_file_path, 'w') as conf_file:
+            json.dump(conf, conf_file)
+    else:
+        print('already exist', conf_file_path)
 
     if not os.path.exists(src_file_path):
+        print('new', src_file_path)
         with open(src_file_path, 'w'):
             pass
+    else:
+        print('already exist', src_file_path)
 
     for case_id, case in conf['cases'].items():
-        case_dir = get_or_create_dir(res_root_dir, case_id)
-        in_case_path = os.path.join(case_dir, '809768.in.txt')
-        out_case_path = os.path.join(case_dir, 'out.txt')
-
-        print(case_dir)
-        print(in_case_path)
-        print(out_case_path)
+        in_case_path = os.path.join(res_root_dir, '.'.join(('in', case_id, 'txt')))
+        out_case_path = os.path.join(res_root_dir, '.'.join(('out',case_id, 'txt')))
 
         in_data = api.get_input(case['id'])
         out_data = api.get_output(case['id'])
 
-        with open(in_case_path, 'w') as in_case_file:
-            in_case_file.write(in_data)
+        if not os.path.exists(in_case_path):
+            print('new', in_case_path)
+            with open(in_case_path, 'w') as in_case_file:
+                in_case_file.write(in_data)
+        else:
+            print('already exist', in_case_path)
 
-        with open(out_case_path, 'w') as ans_case_file:
-            ans_case_file.write(out_data)
+        if not os.path.exists(out_case_path):
+            print('new', out_case_path)
+            with open(out_case_path, 'w') as ans_case_file:
+                ans_case_file.write(out_data)
+        else:
+            print('already exist', out_case_path)
 
     print('DONE {}_{}'.format(judge_alias, problem_id))
-

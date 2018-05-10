@@ -13,14 +13,14 @@ def show_usage(error_msg=None):
 
 def main():
     command = sys.argv[1]
-    judge_alias = sys.argv[2]
+    judge_id = sys.argv[2]
     problem_id = sys.argv[3]
-    case_number = sys.argv[4] if len(sys.argv) == 5 else 'all'
+    case_id = sys.argv[4] if len(sys.argv) == 5 else 'all'
 
     if command == 'run':
-        run_all_script(judge_alias, problem_id)
+        run_all_script(judge_id, problem_id)
     elif command == 'new':
-        create(judge_alias, problem_id)
+        create(judge_id, problem_id)
     else:
         show_usage('Invalid command: {}'.format(command))
         exit(1)

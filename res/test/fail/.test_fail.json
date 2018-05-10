@@ -1,0 +1,10 @@
+{
+  "judge_alias": "test",
+  "problem_id": "fail",
+  "cases": {
+    "01": {
+      "id": "01",
+      "offline": true
+    }
+  }
+}

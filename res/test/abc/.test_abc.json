@@ -1,0 +1,26 @@
+{
+  "judge_alias": "test",
+  "problem_id": "abc",
+  "cases": {
+    "a": {
+      "id": "a",
+      "offline": true
+    },
+    "b": {
+      "id": "b",
+      "offline": true
+    },
+    "c": {
+      "id": "c",
+      "offline": true
+    },
+    "d": {
+      "id": "d",
+      "offline": true
+    },
+    "e": {
+      "id": "e",
+      "offline": true
+    }
+  }
+}
