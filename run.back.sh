@@ -18,22 +18,6 @@ function create_file_path() {
     echo $path
 }
 
-function find_case_path() {
-    local target_category=$1
-    local target_problem=$2
-
-    output=$(python './.tools/settings.py' $target_category $target_problem)
-    result=$?
-
-    if [ $result = 0 ]; then
-        echo $output
-        return 0
-    else
-        return $result
-    fi
-
-}
-
 function run_and_compare() {
     local target_name=$1
     local source_directory=$2

@@ -6,8 +6,9 @@
       <sourceFolder url="file://$MODULE_DIR$/kakao_online_b" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/kakao_online_a" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/programmers" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/tools" isTestSource="false" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.6.0 virtualenv at /usr/local/var/pyenv/versions/playground_env" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.6 (playground_env)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="TestRunnerService">
