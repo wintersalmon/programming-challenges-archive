@@ -9,14 +9,11 @@
 ## How To Use
 
 ### command
+
 ```
-# run
-manager.sh run <judge_name> <problem_num>  # find and run all cases
-manager.sh run <judge_name> <problem_num> [case_num]  # run specific case and show details if case fails
-
-# create
-manager.sh create <judge_name> <problem_num>  # find judge_problem online and create and download all cases
-
+python manager.py run <judge_id> <problem_id> [case_id] # find and run all cases or specific case"
+python manager.py new <judge_id> <problem_id>  # find judge_problem online and create and download all cases"
+python manager.py update <judge_id> <problem_id> <case_id> [*options]  # toggle case options"
 ```
 
 ### examples
