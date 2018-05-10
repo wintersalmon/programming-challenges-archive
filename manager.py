@@ -1,7 +1,7 @@
 import sys
 
 from tools.create import create
-from tools.run import run_all_script
+from tools.run import run_all_script, run_one_script
 from tools.update import update
 
 
@@ -20,11 +20,17 @@ def main():
     case_id = sys.argv[4] if len(sys.argv) > 4 else 'all'
 
     if command == 'run':
-        run_all_script(judge_id, problem_id)
+        if case_id == 'all':
+            run_all_script(judge_id, problem_id)
+        else:
+            run_one_script(judge_id, problem_id, case_id, use_temp_files=False)
+
     elif command == 'new':
         create(judge_id, problem_id)
+
     elif command == 'update':
         update(judge_id, problem_id, case_id, *sys.argv[5:])
+
     else:
         show_usage('Invalid command: {}'.format(command))
         exit(1)

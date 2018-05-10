@@ -7,14 +7,14 @@ PATH = 1
 def load():
     while True:
         line = next(stdin)
-        row_count_str, col_count_str = line.split(' ')
+        row_count_str, col_count_str = line.split()
         row_count, col_count = int(row_count_str), int(col_count_str)
         total_count = row_count * col_count
 
         items = list()
         while len(items) < total_count:
             row = next(stdin)
-            cols = row.split(' ')
+            cols = row.split()
             cur_items = [int(col) for col in cols]
             items += cur_items
 

@@ -25,7 +25,6 @@ def read_input():
 
     while num_of_cases > 0:
 
-        next(stdin)  # read empty line
         num_of_cases -= 1
 
         start_number = read_and_convert_into_tuple(next(stdin))
@@ -37,6 +36,8 @@ def read_input():
             banned_numbers.add(read_and_convert_into_tuple(next(stdin)))
 
         yield start_number, target_number, banned_numbers
+
+        next(stdin)  # read empty line
 
     raise StopIteration
 
