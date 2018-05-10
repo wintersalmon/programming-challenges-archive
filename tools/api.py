@@ -18,12 +18,6 @@ class APIUdebug(object):
         self._session = requests.Session()
         self._session.auth = HTTPBasicAuth(username, password)
 
-    @classmethod
-    def load_from_file(cls, file_path):
-        with open(file_path, 'r') as secret_file:
-            data = json.load(secret_file)
-            return cls(username=data['username'], password=data['password'])
-
     def get_input_list(self, judge_alias, problem_id):
 
         params = {
@@ -70,11 +64,9 @@ def load_username_and_password(file_path):
 
 
 def main():
-    # username, password = load_username_and_password('../.secret.json')
-    #
-    # api = APIUdebug(username=username, password=password)
-
-    api = APIUdebug.load_from_file('../.secret.json')
+    with open('../.secret.json', 'r') as secret_file:
+        data = json.load(secret_file)
+        api = APIUdebug(**data)
 
     judge_alias = 'uva'
     problem_id = '100'

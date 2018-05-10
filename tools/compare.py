@@ -3,15 +3,14 @@ import sys
 
 
 def compare_file_content(from_file_path, to_file_path):
-    with open(from_file_path, 'r') as from_file:
-        with open(to_file_path, 'r') as to_file:
-            return [line for line in
-                    difflib.unified_diff(
-                        from_file.readlines(),
-                        to_file.readlines(),
-                        fromfile='Answer',
-                        tofile='Current',
-                        lineterm='')]
+    with open(from_file_path, 'r') as from_file, open(to_file_path, 'r') as to_file:
+        file_diff = difflib.unified_diff(
+            from_file.readlines(),
+            to_file.readlines(),
+            fromfile='FromFile',
+            tofile='ToFile',
+            lineterm='')
+        return [line for line in file_diff]
 
 
 if __name__ == '__main__':
