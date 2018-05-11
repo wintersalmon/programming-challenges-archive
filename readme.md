@@ -1,9 +1,22 @@
 # programming-challenges-archive
 
-## 목적
-- 알고리즘 문제 풀이를 위한 프레임 자동화 프레임 워크 제작
-- 각 알고리즘의 입력, 출력 예제를 활용하여 실행 시간을 단축
-- 공통된 라이브러리를 제작하여 문제 풀이에 활용하고 테스트 자동화
+
+## 소개
+- 알고리즘 문제 풀이를 위한 프레임 자동화 툴
+- 예제 다운로드, 예제를 이용한 실행, 실행결과 비교 자동화
+- 현재 `python` 전용으로 설계
+
+
+## Introduction
+- automation tools for solving algorithm challenges
+- automated download cases, run with cases, compare results
+- currently designed for `python`
+
+
+## Requirements
+- python (3.6.3)
+- requests (2.18.4)
+- [Udebug API](https://www.udebug.com/API/) (0.1.0)
 
 
 ## How To Use
@@ -12,17 +25,17 @@
 
 ```
 # commands
-python manager.py run <judge_id> <problem_id> [case_id] # find and run all cases or specific case"
-python manager.py new <judge_id> <problem_id>  # find judge_problem online and create and download all cases"
-python manager.py update <judge_id> <problem_id> <case_id> [*options]  # toggle case options"
+$ python manager.py run <judge_id> <problem_id> [case_id] # find and run all cases or specific case"
+$ python manager.py new <judge_id> <problem_id>  # find judge_problem online and create and download all cases"
+$ python manager.py update <judge_id> <problem_id> <case_id> [*options]  # toggle case options"
 
 # options
-# -h --help: display help message
+# -h --help:   display help message
 # -v --detail: display compare diff details
-# -s --save: save results to temp folder
+# -s --save:   save run result to temp file
 ```
 
-### examples
+### command examples
 
 ```
 #### run all cases ####
@@ -84,7 +97,6 @@ RUNNING uva 10004
  BICOLORABLE.
 
  BICOLORABLE.
-<<<<<<< HEAD
 
 -NOT BICOLORABLE.
 
@@ -100,23 +112,6 @@ RUNNING uva 10004
 
 +BICOLORABLE.
 
-=======
-
--NOT BICOLORABLE.
-
--NOT BICOLORABLE.
-
-.
-
-.
-
-.
-
-+NOT BICOLORABLE.
-
-+BICOLORABLE.
-
->>>>>>> master
 DONE
 
 ```
@@ -171,7 +166,7 @@ manager.py
 readme.md
 ```
 
-### file purpose and name format
+### file name patterns
 | format                                  | format     | description |
 | ----------------------------------------| ---------- | ----------- |
 | `(judge_id)_(problem_id).py`            | `python`   | 풀이         |
@@ -185,6 +180,8 @@ readme.md
 - improvements
     + improved error handle
     + add more use cases to readme
+    + add max timeout to run script
+    + improve compare diff result display
 
 - new functions
     + download problem pdf
