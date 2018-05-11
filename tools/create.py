@@ -2,7 +2,7 @@ import json
 import os
 
 from .api import APIUdebug
-from .settings import RES_DIR, SRC_DIR
+from .settings import RES_DIR, SRC_DIR, secret_settings
 
 
 def get_or_create_dir(*paths, mode=0o755):
@@ -17,14 +17,42 @@ def get_or_create_dir(*paths, mode=0o755):
     return target_dir
 
 
+class FileExistDecoratorClass:
+    def __init__(self, original_function):
+        self.original_function = original_function
+
+    def __call__(self, file_path, *args, **kwargs):
+        if os.path.exists(file_path):
+            print('already exist', file_path)
+        else:
+            self.original_function(file_path, *args, **kwargs)
+            print('new file:', file_path)
+
+
+@FileExistDecoratorClass
+def new_file(file_path):
+    with open(file_path, 'w'):
+        pass
+
+
+@FileExistDecoratorClass
+def new_file_and_dump(file_path, content):
+    with open(file_path, 'w') as file:
+        json.dump(content, file)
+
+
+@FileExistDecoratorClass
+def new_file_and_write(file_path, content):
+    with open(file_path, 'w') as file:
+        file.write(content)
+
+
 def create(judge_alias, problem_id):
     print('Download & Create {} {}'.format(judge_alias, problem_id))
     if input('Press ENTER to continue: '):
         return
 
-    with open('.secret.json', 'r') as secret_file:
-        data = json.load(secret_file)
-        api = APIUdebug(**data)
+    api = APIUdebug(secret_settings['username'], secret_settings['password'])
 
     input_list = api.get_input_list(judge_alias, problem_id)
 
@@ -42,39 +70,17 @@ def create(judge_alias, problem_id):
 
     print('new {}_{} {} cases'.format(judge_alias, problem_id, len(conf['cases'])))
 
-    if not os.path.exists(conf_file_path):
-        print('new', conf_file_path)
-        with open(conf_file_path, 'w') as conf_file:
-            json.dump(conf, conf_file)
-    else:
-        print('already exist', conf_file_path)
-
-    if not os.path.exists(src_file_path):
-        print('new', src_file_path)
-        with open(src_file_path, 'w'):
-            pass
-    else:
-        print('already exist', src_file_path)
+    new_file_and_dump(conf_file_path, conf)
+    new_file(src_file_path)
 
     for case_id, case in conf['cases'].items():
         in_case_path = os.path.join(res_root_dir, '.'.join(('in', case_id, 'txt')))
-        out_case_path = os.path.join(res_root_dir, '.'.join(('out',case_id, 'txt')))
+        out_case_path = os.path.join(res_root_dir, '.'.join(('out', case_id, 'txt')))
 
         in_data = api.get_input(case['id'])
         out_data = api.get_output(case['id'])
 
-        if not os.path.exists(in_case_path):
-            print('new', in_case_path)
-            with open(in_case_path, 'w') as in_case_file:
-                in_case_file.write(in_data)
-        else:
-            print('already exist', in_case_path)
-
-        if not os.path.exists(out_case_path):
-            print('new', out_case_path)
-            with open(out_case_path, 'w') as ans_case_file:
-                ans_case_file.write(out_data)
-        else:
-            print('already exist', out_case_path)
+        new_file_and_write(in_case_path, in_data)
+        new_file_and_write(out_case_path, out_data)
 
     print('DONE {}_{}'.format(judge_alias, problem_id))
