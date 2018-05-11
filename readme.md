@@ -151,32 +151,6 @@ DONE
 .secret.json  # contains secret settings
 manager.py
 readme.md
-
-/.tools
-    compare.py
-    load.py
-    settings.py
-/uva
-	/100
-	    /case
-            uva_100.ans.txt
-            uva_100.in.txt
-            uva_100.out.txt
-        uva_100.pdf
-		uva_100.py
-	/116  # problem with more then one input case
-		/case
-            uva_116.ans.txt
-            uva_116.in.txt
-            uva_116.out.txt
-        /case_01
-            uva_116.ans.txt
-            uva_116.in.txt
-            uva_116.out.txt
-        uva_116.pdf
-		uva_116.py
-create.sh
-run.sh
 ```
 
 ### file purpose and name format
@@ -192,6 +166,7 @@ run.sh
 ### TODO
 - improvements
     + improved error handle
+    + add more use cases to readme
 
 - new functions
     + download problem pdf
