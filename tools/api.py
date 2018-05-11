@@ -1,7 +1,7 @@
-import json
-
 import requests
 from requests.auth import HTTPBasicAuth
+
+from tools.settings import secret_settings
 
 
 class APIError(Exception):
@@ -57,17 +57,8 @@ class APIUdebug(object):
             raise APIError(response.status_code)
 
 
-def load_username_and_password(file_path):
-    with open(file_path, 'r') as secret_file:
-        data = json.load(secret_file)
-        return data['username'], data['password']
-
-
 def main():
-    with open('../.secret.json', 'r') as secret_file:
-        data = json.load(secret_file)
-        api = APIUdebug(**data)
-
+    api = APIUdebug(secret_settings['username'], secret_settings['password'])
     judge_alias = 'uva'
     problem_id = '100'
     input_list = api.get_input_list(judge_alias, problem_id)
