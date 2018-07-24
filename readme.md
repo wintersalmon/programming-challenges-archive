@@ -1,41 +1,58 @@
 # programming-challenges-archive
 
+- 2018 03월 ~ 현재
+- 알고리즘 문제 풀이 보관소 겸 자동화툴
+- Online Judge 를 사용하는 알고리즘 문제 풀이의 단점을 개선 하기 위해, 자동화 스크립트와 Udebug API 를 활용하여 효율적인 개발 환경을 구축하는 프로젝트
 
-## 소개
-- 알고리즘 문제 풀이를 위한 프레임 자동화 툴
-- 예제 다운로드, 예제를 이용한 실행, 실행결과 비교 자동화
-- 현재 `python` 전용으로 설계
+### 기술 스택
 
-
-## Introduction
-- automation tools for solving algorithm challenges
-- automated download cases, run with cases, compare results
-- currently designed for `python`
-
-
-## Requirements
 - python (3.6.3)
 - requests (2.18.4)
 - [Udebug API](https://www.udebug.com/API/) (0.1.0)
 
+### 설명
 
-## How To Use
+- online Judge 를 이용해서 알고리즘 풀이를 할 경우 다음과 같은 단점이 있다
+	- Python 심사를 최근에 지원하기 시작해서 오류가 발생할 수 있다
+	- [로컬 IDE -> 웹 브라이져 -> 심사 -> 결과 확인] 시간소요 및 오류 발생 가능
+	- custom 라이브러리를 import 해서 사용하기 힘들다
+	- 테스트 케이스를 직접 작성하고 실행해 보기 힘들다
+	- 실패한 심사 결과에 대한 정보가 부족하다
+		- 전체/일부 케이스 실패
+		- 입/출력 양식 오류
+		- 예외 발생
 
-### command
+- Udebug 라는 사이트는 다음과 같은 장점이 있다
+	- 각 문제에 대한 입출력 예제를 얻을 수 있다
+	- 입력 예제를 직접 작성하고 그에 해당하는 올바른 출력값을 획득 할 수 있다
+	- 제공하는 API 를 이용해서 위 과정을 자동화 할 수 있다
 
-```
-# commands
-$ python manager.py run <judge_id> <problem_id> [case_id] # find and run all cases or specific case"
-$ python manager.py new <judge_id> <problem_id>  # find judge_problem online and create and download all cases"
-$ python manager.py update <judge_id> <problem_id> <case_id> [*options]  # toggle case options"
+- PCA 를 통해서
+	- 디버깅이 쉽다
+	- 문제 풀이 시간이 단축된다
+	- 온라인 심사 에서는 사용할 수 없는 방법으로 문제를 풀 수 있다
+	- 자주 사용하는 기능을 라이브러리로 만들고 import 해서 사용할 수 있다
+	- 비슷한 풀이를 참조하고 같은 실수를 반복하는 것을 방지할 수 있다
 
-# options
-# -h --help:   display help message
-# -v --detail: display compare diff details
-# -s --save:   save run result to temp file
-```
+### 기능
 
-### command examples
+	$ python manager.py [-h]
+	$ python manager.py new <judge_id> <problem_id>
+	$ python manager.py update <judge_id> <problem_id> <case_id> [option_name, ...]
+	$ python manager.py run [-vs] <judge_id> <problem_id> [case_id]
+
+	# options
+	# -h --help:   display help message
+	# -v --detail: display compare diff details
+	# -s --save:   save run result to temp file
+
+**new** : 문제 풀이에 필요한 파일들(소스, 입출력 예제)을 자동으로 생성/다운로드 한다
+
+**update** : 주어진 문제 테스트 케이스에 대한 옵션을 토글 한다
+
+**run** : 주어진 문제에 해당하는 테스트 케이스(전부 또는 일부)를 실행하고 실행 결과를 출력한다
+
+### 명령 실행 예
 
 ```
 #### run all cases ####
@@ -116,7 +133,16 @@ DONE
 
 ```
 
-### directory example
+### 파일 포맷 설명
+| format                                  | format     | description |
+| ----------------------------------------| ---------- | ----------- |
+| `(judge_id)_(problem_id).py`            | `python`   | 풀이         |
+| `(judge_id)_(problem_id).pdf`           | `pdf`      | 문제         |
+| `in.(case_id).txt`                      | `txt`      | 입력         |
+| `out.(case_id).txt`                     | `txt`      | 예상 출력     |
+| `(judge_id).(problem_id).(case_id).txt` | `txt`      | 실행 결과     |
+
+### 프로젝트 디렉토리 설명
 ```
 /res  # contains resources(ex: input, output, etc.)
     /test
@@ -166,25 +192,13 @@ manager.py
 readme.md
 ```
 
-### file name patterns
-| format                                  | format     | description |
-| ----------------------------------------| ---------- | ----------- |
-| `(judge_id)_(problem_id).py`            | `python`   | 풀이         |
-| `(judge_id)_(problem_id).pdf`           | `pdf`      | 문제         |
-| `in.(case_id).txt`                      | `txt`      | 입력         |
-| `out.(case_id).txt`                     | `txt`      | 예상 출력     |
-| `(judge_id).(problem_id).(case_id).txt` | `txt`      | 실행 결과     |
+### ToDo
 
-
-### TODO
-- improvements
-    + improved error handle
-    + add more use cases to readme
-    + add max timeout to run script
-    + improve compare diff result display
-
-- new functions
-    + download problem pdf
-    + create and save custom case
-    + view judges, problems, cases
-    + up-to-date existing project
+- 입출력 예제를 Git 에서 제거하고, 소스 디렉토리를 단순화 한다
+- 기존에 있는 케이스 목록을 최신 정보로 업데이트 하는 기능
+- 문제 설명 pdf 파일을 다운로드 하는 기능
+- 개인 테스트를 자동으로 생산 및 저장하는 기능
+- Judege/Problem/Case 목록을 출력 하는 기능
+- Udebug 에서 지원하지 않는 다양한 사이트 문제 추가 (입출력 방식의 풀이가 아닌 문제들)
+	- Function Based Problems [programmers](https://programmers.co.kr])
+	- Answer Based Problems [projecteuler](projecteuler.net)
