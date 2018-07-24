@@ -55,35 +55,19 @@
 ### 명령 실행 예
 
 ```
-#### run all cases ####
+#### 모든 테스트 케이스 실행 ####
 
 $ python manager.py run test abc
 RUNNING test abc
 - with case a: [ 0.0405] OK
-- with case b: [ 0.0555] OK
-- with case c: [ 0.0512] OK
+- with case b: [       ] SKIP
+- with case c: [ 0.3512] FAIL
 - with case d: [ 0.0452] OK
-- with case e: [ 0.0529] OK
-DONE
-
-$ python manager.py run uva 100
-RUNNING uva 100
-- with case 809768: [ 0.0643] OK
-- with case 809769: [ 0.5644] OK
-- with case 821829: [ 0.2180] OK
-- with case 827013: [       ] SKIP
-- with case 827361: [ 0.0420] OK
-DONE
-
-$ python manager.py run uva 10004
-RUNNING uva 10004
-- with case 810309: [ 0.0528] OK
-- with case 833508: [ 0.4887] FAIL
-- with case 836416: [ 0.0424] OK
+- with case e: [ 0.2529] FAIL
 DONE
 
 
-#### run one case by name ####
+#### 하나의 테스트 케이스만 실행 ####
 
 $ python manager.py run uva 100 827013
 RUNNING uva 100
@@ -96,7 +80,7 @@ RUNNING uva 10004
 DONE
 
 
-#### running one case will show details about fail ####
+#### 하나의 테스트 케이스만 실행하고 상세 정보 출력 ####
 
 $ python manager.py run uva 100 809768
 RUNNING uva 10004
@@ -119,11 +103,7 @@ RUNNING uva 10004
 
 -NOT BICOLORABLE.
 
-.
-
-.
-
-.
+. . .
 
 +NOT BICOLORABLE.
 
@@ -144,51 +124,28 @@ DONE
 
 ### 프로젝트 디렉토리 설명
 ```
-/res  # contains resources(ex: input, output, etc.)
+/res  # 문제 풀이 리소스 파일 디렉토리 (입력, 출력, 설정, 기타 등)
     /test
         /abc
-            .test_abc.json  # contains settings about current cases
+            .test_abc.json  # 현재 문제에 대한 설정 파일
             in.a.txt
             in.b.txt
             in.c.txt
             out.a.txt
             out.b.txt
             out.c.txt
-        /fail
-        /num
     /uva
-        /100
-            .uva_100.json
-            in.809768.txt
-            in.809769.txt
-            in.821829.txt
-            in.827013.txt
-            in.827361.txt
-            out.809768.txt
-            out.809769.txt
-            out.821829.txt
-            out.827013.txt
-            out.827361.txt
-        /101
-        /116
-        /10004
-/src  # contains solutions
+/src  # 문제 풀이 소스 파일 디렉토리
     /test
         /abc
             test_abc.py
-        /fail
-        /num
     /uva
         /100
             uva_100.py
-        /101
-        /116
-        /10004
-            uva_10004.py
-/temp         # contains saved outputs
-/tools        # contains script used in manager.py
-.secret.json  # contains secret settings
-manager.py
+/temp         # 실행 결과의 출력을 임시 저장하는 디렉토리
+/tools        # 자동화 스크립트 저장 디렉토리
+.secret.json  # api 비밀키 등을 저장한 설정파일
+manager.py    # 모든 명령을 실행하는 시작 파일
 readme.md
 ```
 
