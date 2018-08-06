@@ -54,7 +54,7 @@ class Node(object):
         self.color = color
 
     def __str__(self):
-        return str(self.name)
+        return '[{}, {}]: ({})'.format(self.name, self.color, [n.name for n in self.child])
 
     def __repr__(self):
         return self.__str__()
@@ -68,6 +68,17 @@ class Graph(object):
             src_node = self.nodes[s]
             dst_node = self.nodes[d]
             src_node.add_node(dst_node)
+            dst_node.add_node(src_node)
+
+    def __iter__(self):
+        for node in self.nodes:
+            yield node
+
+    def __str__(self):
+        lines = list()
+        for n in self.nodes:
+            lines.append(str(n))
+        return '\n'.join(lines)
 
 
 def solution(n, edges):
