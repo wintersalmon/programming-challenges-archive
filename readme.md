@@ -53,6 +53,8 @@
 			# -d --detail: display compare diff details
 			# -s --save:   save run result to temp file
 
+**help** 도움말 출력
+
 **new** 해당 문제 기본 파일을 생성하고, 필요한 리소스 파일을 온라인에서 검색해서 다운로드 한다. (예: 입력, 출력, 문제 파일), ```problem_alias``` 를 입력하지 않을 경우 임의의 이름이 주어진다
 
 **show** 해당 문제 관련 정보를 출력한다
