@@ -36,29 +36,42 @@
 
 ### 기능
 
-	$ python manager.py [-h]
-	$ python manager.py new <judge_id> <problem_id>
-	$ python manager.py update <judge_id> <problem_id> <case_id> [option_name, ...]
-	$ python manager.py run [-vs] <judge_id> <problem_id> [case_id]
+	# general
+	$ python manager.py help
+	$ python manager.py new <judge> <problem> [problem_alias]
+	$ python manager.py show <problem_alias>
+	
+	# manage
+	$ python manager.py update <problem_alias>
+	$ python manager.py toggle <problem_alias> <case> <option>
+	$ python manager.py add <case_file_path> <problem_alias> [case_alias]
+	
+	# run
+	$ python manager.py run <problem_alias>
+	$ python manager.py run <problem_alias> <case>
+			# options
+			# -d --detail: display compare diff details
+			# -s --save:   save run result to temp file
 
-	# options
-	# -h --help:   display help message
-	# -v --detail: display compare diff details
-	# -s --save:   save run result to temp file
+**new** 해당 문제 기본 파일을 생성하고, 필요한 리소스 파일을 온라인에서 검색해서 다운로드 한다. (예: 입력, 출력, 문제 파일), ```problem_alias``` 를 입력하지 않을 경우 임의의 이름이 주어진다
 
-**new** : 문제 풀이에 필요한 파일들(소스, 입출력 예제)을 자동으로 생성/다운로드 한다
+**show** 해당 문제 관련 정보를 출력한다
 
-**update** : 주어진 문제 테스트 케이스에 대한 옵션을 토글 한다
+**update** 해당 문제 케이스 목록을 온라인과 비교하고 추가된 문제를 다운로드 한다
 
-**run** : 주어진 문제에 해당하는 테스트 케이스(전부 또는 일부)를 실행하고 실행 결과를 출력한다
+**toggle** 해당 문제 케이스에 대한 옵션을 토글 한다
+
+**add** 해당 문제에 직접 작성한 테스트 케이스를 추가한다 (```Accepted``` 파일을 자동으로 생성한다)
+
+**run** 해당 문제 테스트 케이스를 (전부 또는 일부) 실행한다.
 
 ### 명령 실행 예
 
 ```
 #### 모든 테스트 케이스 실행 ####
 
-$ python manager.py run test abc
-RUNNING test abc
+$ python manager.py run test_abc
+RUNNING test_abc (test/abc)
 - with case a: [ 0.0405] OK
 - with case b: [       ] SKIP
 - with case c: [ 0.3512] FAIL
@@ -69,8 +82,8 @@ DONE
 
 #### 하나의 테스트 케이스만 실행 ####
 
-$ python manager.py run uva 100 827013
-RUNNING uva 100
+$ python manager.py run the_3n_plus_1 827013
+RUNNING the_3n_plus_1 (uva/100)
 - with case 827013: [ 0.0602] OK
 DONE
 
@@ -114,20 +127,21 @@ DONE
 ```
 
 ### 파일 포맷 설명
-| format                                  | format     | description |
-| ----------------------------------------| ---------- | ----------- |
-| `(judge_id)_(problem_id).py`            | `python`   | 풀이         |
-| `(judge_id)_(problem_id).pdf`           | `pdf`      | 문제         |
-| `in.(case_id).txt`                      | `txt`      | 입력         |
-| `out.(case_id).txt`                     | `txt`      | 예상 출력     |
-| `(judge_id).(problem_id).(case_id).txt` | `txt`      | 실행 결과     |
+
+| format                                  | format   | description |
+| --------------------------------------- | -------- | ----------- |
+| `solution.py`                           | `python` | 풀이         |
+| `problem.pdf`                           | `pdf`    | 문제         |
+| `in.(case_id).txt`                      | `txt`    | 입력         |
+| `out.(case_id).txt`                     | `txt`    | 예상 출력     |
+| `(problem_alias).(case_id).txt`         | `txt`    | 실행 결과 (임시) |
+| `(judge_id).(problem_id).(case_id).txt` | `txt`    | 실행 결과 (임시) |
 
 ### 프로젝트 디렉토리 설명
 ```
-/res  # 문제 풀이 리소스 파일 디렉토리 (입력, 출력, 설정, 기타 등)
+/res  # 문제 풀이 리소스 파일 디렉토리 (입력, 출력, 케이스)
     /test
         /abc
-            .test_abc.json  # 현재 문제에 대한 설정 파일
             in.a.txt
             in.b.txt
             in.c.txt
@@ -135,17 +149,26 @@ DONE
             out.b.txt
             out.c.txt
     /uva
+    	/100
+    		in.*.txt
+    		out.*.txt
+
 /src  # 문제 풀이 소스 파일 디렉토리
-    /test
-        /abc
-            test_abc.py
-    /uva
-        /100
-            uva_100.py
-/temp         # 실행 결과의 출력을 임시 저장하는 디렉토리
-/tools        # 자동화 스크립트 저장 디렉토리
+	/test_abc
+		.conf.json
+		problem.pdf
+		readme.md
+		solution.py
+	/the_3n_plus_1
+		.conf.json
+		problem.pdf
+		readme.md
+		solution.py
+
+/temp         # 실행 결과를 임시 저장하는 디렉토리
+/tools        # 자동화 스크립트 디렉토리
 .secret.json  # api 비밀키 등을 저장한 설정파일
-manager.py    # 모든 명령을 실행하는 시작 파일
+manager.py
 readme.md
 ```
 
