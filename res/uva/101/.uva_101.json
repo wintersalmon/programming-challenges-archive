@@ -1,1 +1,34 @@
-{"judge_alias": "uva", "problem_id": "101", "cases": {"809875": {"id": "809875", "user": "morris821028", "Date": "2016-05-03 11:05:19", "Votes": "40"}, "809876": {"id": "809876", "user": "brianfry713", "Date": "2016-05-03 11:05:19", "Votes": "53"}, "832955": {"id": "832955", "user": "FunCoding", "Date": "2017-08-23 11:48:59", "Votes": "5"}, "sample_a": {"id": "sample_a", "offline": true}}}
+{
+  "judge_alias": "uva",
+  "problem_id": "101",
+  "cases": {
+    "809875": {
+      "id": "809875",
+      "user": "morris821028",
+      "Date": "2016-05-03 11:05:19",
+      "Votes": "40"
+    },
+    "809876": {
+      "id": "809876",
+      "user": "brianfry713",
+      "Date": "2016-05-03 11:05:19",
+      "Votes": "53"
+    },
+    "832955": {
+      "id": "832955",
+      "user": "FunCoding",
+      "Date": "2017-08-23 11:48:59",
+      "Votes": "5"
+    },
+    "sample_a": {
+      "id": "sample_a",
+      "offline": true
+    },
+    "837953": {
+      "id": "837953",
+      "user": "msabeer",
+      "Date": "2018-06-02 09:11:58",
+      "Votes": "3"
+    }
+  }
+}
