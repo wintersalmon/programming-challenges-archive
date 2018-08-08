@@ -17,7 +17,7 @@ def get_or_create_dir(*paths, mode=0o755):
     return target_dir
 
 
-class FileExistDecoratorClass:
+class FileExistDecoratorClass(object):
     def __init__(self, original_function):
         self.original_function = original_function
 
@@ -66,21 +66,32 @@ def create(judge_alias, problem_id):
     conf_file_path = os.path.join(res_root_dir, '.{}_{}.json'.format(judge_alias, problem_id))
 
     src_root_dir = get_or_create_dir(SRC_DIR, judge_alias, problem_id)
+    src_readme = os.path.join(src_root_dir, 'readme.md')
     src_file_path = os.path.join(src_root_dir, '{}_{}.py'.format(judge_alias, problem_id))
 
     print('new {}_{} {} cases'.format(judge_alias, problem_id, len(conf['cases'])))
 
     new_file_and_dump(conf_file_path, conf)
+    new_file(src_readme)
     new_file(src_file_path)
 
-    for case_id, case in conf['cases'].items():
-        in_case_path = os.path.join(res_root_dir, '.'.join(('in', case_id, 'txt')))
-        out_case_path = os.path.join(res_root_dir, '.'.join(('out', case_id, 'txt')))
+    with open(conf_file_path, 'r') as conf_file:
+        loaded_conf = json.load(conf_file)
 
-        in_data = api.get_input(case['id'])
-        out_data = api.get_output(case['id'])
+        for case_id, case in conf['cases'].items():
+            if case_id not in loaded_conf['cases']:
+                loaded_conf['cases'][case_id] = conf['cases'][case_id]
 
-        new_file_and_write(in_case_path, in_data)
-        new_file_and_write(out_case_path, out_data)
+            in_case_path = os.path.join(res_root_dir, '.'.join(('in', case_id, 'txt')))
+            out_case_path = os.path.join(res_root_dir, '.'.join(('out', case_id, 'txt')))
+
+            in_data = api.get_input(case['id'])
+            out_data = api.get_output(case['id'])
+
+            new_file_and_write(in_case_path, in_data)
+            new_file_and_write(out_case_path, out_data)
+
+        with open(conf_file_path, 'w') as save_conf_file:
+            json.dump(loaded_conf, save_conf_file)
 
     print('DONE {}_{}'.format(judge_alias, problem_id))
