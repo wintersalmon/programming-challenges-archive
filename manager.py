@@ -1,7 +1,9 @@
 import getopt
 import sys
 
+from tools.create import create_v2
 from tools.models import RunnableProblem
+from tools.run import run_and_compare, run_and_compare_v2
 
 
 def main():
@@ -26,35 +28,40 @@ def main():
     command = args[0].lower()
 
     if command == 'help':
-        pass
+        show_usage('Invalid arguments: {}'.format(*args))
+        exit(0)
+
     elif command == 'new':
-        pass
+        judge_id = args[1]
+        problem_id = args[2]
+        problem_alias = args[3] if len(args) == 4 else None
+
+        create_v2(judge_id, problem_id, problem_alias)
+
     elif command == 'show':
         pass
+
     elif command == 'update':
         pass
+
     elif command == 'toggle':
         pass
+
     elif command == 'add':
         pass
+
     elif command == 'run':
-        if len(args) == 2:
+        if len(args) in (2, 3):
             problem_alias = args[1]
-            problem = RunnableProblem.load(problem_alias)
-            problem.run_all_cases()
-        elif len(args) == 3:
-            pass
-            problem_alias = args[1]
-            case_alias = args[2]
-            problem = RunnableProblem.load(problem_alias)
-            problem.run_one_case(case_alias)
+            case_alias = args[2] if len(args) == 3 else None
+            run_and_compare_v2(problem_alias, case_alias, show_details=show_details, save_results=save_results)
         else:
             show_usage('Invalid arguments: {}'.format(*args))
             exit(1)
 
     else:
         show_usage()
-        sys.exit()
+        sys.exit(1)
 
     # judge_id = args[1]
     # problem_id = args[2]

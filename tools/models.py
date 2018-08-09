@@ -20,16 +20,16 @@ class MyModels(object):
             return json.load(file)
 
 
-class Problem(MyModels):
+class ProblemConf(MyModels):
     def __init__(
             self,
-            alias: str,
-            judge: str,
-            problem: str,
+            problem_alias: str,
+            judge_alias: str,
+            problem_id: str,
             cases: List[Dict] = None):
-        self._alias = alias
-        self._judge = judge
-        self._problem = problem
+        self._problem_alias = problem_alias
+        self._judge_alias = judge_alias
+        self._problem_id = problem_id
         self._cases = cases
 
     @classmethod
@@ -38,14 +38,14 @@ class Problem(MyModels):
 
     def encode(self):
         return {
-            'alias': self.alias,
-            'judge': self.judge,
-            'problem': self.problem,
+            'problem_alias': self.problem_alias,
+            'judge_alias': self.judge_alias,
+            'problem_id': self.problem_id,
             'cases': self.cases
         }
 
     def save(self):
-        conf_file_path = self.get_conf_file_path(self.alias)
+        conf_file_path = self.get_conf_file_path(self.problem_alias)
         self.save_json(conf_file_path, self.encode())
 
     @classmethod
@@ -55,37 +55,37 @@ class Problem(MyModels):
         return cls(**conf)
 
     @property
-    def alias(self):
-        return self._alias
+    def problem_alias(self):
+        return self._problem_alias
 
     @property
-    def judge(self):
-        return self._judge
+    def judge_alias(self):
+        return self._judge_alias
 
     @property
-    def problem(self):
-        return self._problem
+    def problem_id(self):
+        return self._problem_id
 
     @property
     def cases(self):
         return self._cases
 
 
-class RunnableProblem(Problem):
-    def run_all_cases(self):
+class RunnableProblem(ProblemConf):
+    def run_all_cases(self, *, show_details: bool = False, save_results: bool = False):
         for case in self.cases:
-            self._run_and_compare(case)
+            self._run_and_compare(case, show_details=show_details, save_results=save_results)
 
-    def run_one_case(self, case_alias: str):
+    def run_one_case(self, case_id: str, *, show_details: bool = False, save_results: bool = False):
         target_case = None
         for case in self.cases:
-            if case_alias == case['id']:
+            if case_id == case['id']:
                 target_case = case
                 break
         if target_case is None:
-            print('case not found: {}'.format(case_alias))
+            print('case not found: {}'.format(case_id))
         else:
-            self._run_and_compare(target_case, show_details=True, save_results=True)
+            self._run_and_compare(target_case, show_details=show_details, save_results=save_results)
 
     def _run_and_compare(self, case, *, show_details: bool = False, save_results: bool = False):
         print('- with case {}: '.format(case['id']), end='')
@@ -94,13 +94,14 @@ class RunnableProblem(Problem):
             print('[       ] SKIP'.format(case['id']))
             return
 
-        src_file_path = os.path.join(SRC_DIR, self.alias, 'solution.py')
-        in_file_path = os.path.join(RES_DIR, self.alias, '.'.join(('in', case['id'], 'txt')))
-        out_file_path = os.path.join(RES_DIR, self.alias, '.'.join(('out', case['id'], 'txt')))
+        case_id = case['id']
+        src_file_path = os.path.join(SRC_DIR, self.problem_alias, 'solution.py')
+        in_file_path = os.path.join(RES_DIR, self.judge_alias, self.problem_id, case_id, 'in.txt')
+        out_file_path = os.path.join(RES_DIR, self.judge_alias, self.problem_id, case_id, 'out.txt')
 
         if save_results:
             temp_result_file = None
-            result_file_path = os.path.join(TEMP_DIR, '.'.join((self.alias, case['id'], 'txt')))
+            result_file_path = os.path.join(TEMP_DIR, '.'.join((self.problem_alias, case['id'], 'txt')))
         else:
             temp_result_file = tempfile.NamedTemporaryFile()
             result_file_path = temp_result_file.name
