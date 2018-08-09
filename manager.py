@@ -28,7 +28,7 @@ def main():
     command = args[0].lower()
 
     if command == 'help':
-        show_usage('Invalid arguments: {}'.format(*args))
+        show_usage()
         exit(0)
 
     elif command == 'new':
@@ -61,7 +61,7 @@ def main():
             exit(1)
 
     else:
-        show_usage()
+        show_usage('Invalid arguments: {}'.format(*args))
         sys.exit(1)
 
     # judge_id = args[1]
@@ -97,14 +97,25 @@ def main():
 def show_usage(error_msg=None):
     if error_msg:
         print(error_msg)
-    print("manager.py run <judge_id> <problem_id> [case_id] # find and run all cases or specific case")
-    print("manager.py new <judge_id> <problem_id>  # find judge_problem online and create and download all cases")
-    print("manager.py update <judge_id> <problem_id> <case_id> [*options]  # toggle case options")
-    print()
-    print("options:")
-    print("-h --help: display help message")
-    print("-v --detail: display compare diff details")
-    print("-s --save: save results to temp folder")
+    help_msg = """
+# general
+$ python manager.py help
+$ python manager.py new <judge> <problem> [problem_alias]
+$ python manager.py show <problem_alias>
+
+# manage
+$ python manager.py update <problem_alias>
+$ python manager.py toggle <problem_alias> <case> <option>
+$ python manager.py add <case_file_path> <problem_alias> [case_alias]
+
+# run
+$ python manager.py run <problem_alias>
+$ python manager.py run <problem_alias> <case>
+    # options
+    # -d --detail: display compare diff details
+    # -s --save:   save run result to temp file
+    """
+    print(help_msg)
 
 
 if __name__ == '__main__':
