@@ -2,8 +2,8 @@ import getopt
 import sys
 
 from tools.create import create_v2
-from tools.models import RunnableProblem
-from tools.run import run_and_compare, run_and_compare_v2
+from tools.run import run_and_compare_v2
+from tools.show import show
 
 
 def main():
@@ -39,7 +39,8 @@ def main():
         create_v2(judge_id, problem_id, problem_alias)
 
     elif command == 'show':
-        pass
+        problem_alias = args[1]
+        show(problem_alias)
 
     elif command == 'update':
         pass

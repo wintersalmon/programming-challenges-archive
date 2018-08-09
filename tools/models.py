@@ -70,6 +70,14 @@ class ProblemConf(MyModels):
     def cases(self):
         return self._cases
 
+    def __repr__(self):
+        return 'Problem\n\tname: {problem_alias}\n\tcode: {judge_alias}/{problem_id}\n\tcases: {cases}'.format(
+            problem_alias=self.problem_alias,
+            judge_alias=self.judge_alias,
+            problem_id=self.problem_id,
+            cases=[(c['id'], c['options'] if 'options' in c else []) for c in self.cases]
+        )
+
 
 class RunnableProblem(ProblemConf):
     def run_all_cases(self, *, show_details: bool = False, save_results: bool = False):
