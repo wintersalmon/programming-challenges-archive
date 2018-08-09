@@ -1,9 +1,7 @@
 import getopt
 import sys
 
-from tools.create import create
-from tools.run import run_all_cases, run_one_case
-from tools.update import update
+from tools.models import RunnableProblem
 
 
 def main():
@@ -42,12 +40,14 @@ def main():
     elif command == 'run':
         if len(args) == 2:
             problem_alias = args[1]
-            run_all_cases(problem_alias=problem_alias, save_results=save_results, show_details=show_details)
+            problem = RunnableProblem.load(problem_alias)
+            problem.run_all_cases()
         elif len(args) == 3:
+            pass
             problem_alias = args[1]
             case_alias = args[2]
-            run_all_cases(problem_alias=problem_alias, case_alias=case_alias, save_results=save_results, show_details=show_details)
-            # run_one_case(judge_id, problem_id, case_id, save_results=save_results, show_details=show_details)
+            problem = RunnableProblem.load(problem_alias)
+            problem.run_one_case(case_alias)
         else:
             show_usage('Invalid arguments: {}'.format(*args))
             exit(1)
