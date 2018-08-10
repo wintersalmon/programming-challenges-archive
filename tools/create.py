@@ -24,10 +24,10 @@ class FileExistDecoratorClass(object):
 
     def __call__(self, file_path, *args, **kwargs):
         if os.path.exists(file_path):
-            print('already exist', file_path)
+            print('Duplicate', file_path)
         else:
             self.original_function(file_path, *args, **kwargs)
-            print('new file:', file_path)
+            print('New', file_path)
 
 
 @FileExistDecoratorClass
@@ -118,7 +118,7 @@ def create_v2(judge_alias, problem_id, problem_alias=None):
         problem_alias=problem_alias,
         judge_alias=judge_alias,
         problem_id=problem_id,
-        cases=input_list
+        cases={case['id']: {"options": list()} for case in input_list}
     )
 
     src_dir = get_or_create_dir(SRC_DIR, problem_alias)
@@ -132,18 +132,22 @@ def create_v2(judge_alias, problem_id, problem_alias=None):
     # check if duplicate alias exists
     if os.path.exists(conf_file_path):
         prev_conf = ProblemConf.load(problem_alias)
-        if (cur_conf.judge_alias, cur_conf.problem_id) != (prev_conf.judge_alias, prev_conf.problem_id):
-            print('name {} already used on {}/{}'.format(problem_alias, prev_conf.judge_alias, prev_conf.problem_id))
+        if cur_conf != prev_conf:
+            print('problem alias {} already used: {}/{}'.format(
+                problem_alias, prev_conf.judge_alias, prev_conf.problem_id))
             return False
-    else:
-        # new_file_and_dump(conf_file_path, cur_conf.encode())
-        cur_conf.save()
-    # new_file(problem_file_path)
+        else:
+            for case_id, case in prev_conf.cases.items():
+                if case_id not in cur_conf.cases:
+                    cur_conf.cases[case_id] = case
+                else:
+                    cur_conf.cases[case_id].update(case)
+
+    cur_conf.save()
     new_file(readme_file_path)
     new_file(solution_file_path)
 
-    for case in cur_conf.cases:
-        case_id = case['id']
+    for case_id, case in cur_conf.cases.items():
         case_dir = get_or_create_dir(res_dir, case_id)
 
         in_case_path = os.path.join(case_dir, 'in.txt')
@@ -152,9 +156,15 @@ def create_v2(judge_alias, problem_id, problem_alias=None):
         if not os.path.exists(in_case_path):
             in_data = api.get_input(case_id)
             new_file_and_write(in_case_path, in_data)
+            print('New', in_case_path)
+        else:
+            print('Duplicate', in_case_path)
 
         if not os.path.exists(out_case_path):
             out_data = api.get_output(case_id)
             new_file_and_write(out_case_path, out_data)
+            print('New', out_case_path)
+        else:
+            print('Duplicate', out_case_path)
 
     print('COMPLETE')

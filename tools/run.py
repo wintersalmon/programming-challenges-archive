@@ -77,9 +77,9 @@ def run_and_compare_v2(problem_alias, case_alias=None, *, show_details=False, sa
     problem = RunnableProblem.load(problem_alias)
 
     if case_alias is None:
-        problem.run_all_cases(show_details=show_details, save_results=save_results)
+        problem.run_all_cases(show_detail=show_details, save_result=save_results)
     else:
-        problem.run_one_case(case_alias, show_details=show_details, save_results=save_results)
+        problem.run(case_alias, show_detail=show_details, save_result=save_results)
 
 
 def run(in_file_path, out_file_path, src_file_path):

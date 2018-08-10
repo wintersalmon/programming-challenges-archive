@@ -3,7 +3,7 @@ import json
 import os
 import tempfile
 import time
-from typing import List, Dict
+from typing import Dict
 
 from tools.settings import SRC_DIR, RES_DIR, TEMP_DIR
 
@@ -12,7 +12,7 @@ class MyModels(object):
     @classmethod
     def save_json(cls, file_path: str, content: Dict):
         with open(file_path, 'w') as file:
-            json.dump(content, file)
+            json.dump(content, file, indent=2, separators=(',', ': '))
 
     @classmethod
     def load_json(cls, file_path: str) -> Dict:
@@ -26,7 +26,7 @@ class ProblemConf(MyModels):
             problem_alias: str,
             judge_alias: str,
             problem_id: str,
-            cases: List[Dict] = None):
+            cases: Dict[str, Dict] = None):
         self._problem_alias = problem_alias
         self._judge_alias = judge_alias
         self._problem_id = problem_id
@@ -38,7 +38,6 @@ class ProblemConf(MyModels):
 
     def encode(self):
         return {
-            'problem_alias': self.problem_alias,
             'judge_alias': self.judge_alias,
             'problem_id': self.problem_id,
             'cases': self.cases
@@ -52,6 +51,7 @@ class ProblemConf(MyModels):
     def load(cls, problem_alias: str):
         conf_file_path = cls.get_conf_file_path(problem_alias)
         conf = cls.load_json(conf_file_path)
+        conf['problem_alias'] = problem_alias
         return cls(**conf)
 
     @property
@@ -71,50 +71,52 @@ class ProblemConf(MyModels):
         return self._cases
 
     def __repr__(self):
-        return 'Problem\n\tname: {problem_alias}\n\tcode: {judge_alias}/{problem_id}\n\tcases: {cases}'.format(
+        return 'Problem\n  name: {problem_alias}\n  code: {judge_alias}/{problem_id}\n  cases: {cases}'.format(
             problem_alias=self.problem_alias,
             judge_alias=self.judge_alias,
             problem_id=self.problem_id,
-            cases=[(c['id'], c['options'] if 'options' in c else []) for c in self.cases]
+            cases=json.dumps(self.cases, indent=2, separators=('  ', ': '))
         )
+
+    def __eq__(self, other):
+        if isinstance(other, ProblemConf):
+            return (self.judge_alias, self.problem_id) == (other.judge_alias, other.problem_id)
+        raise NotImplementedError
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
 
 class RunnableProblem(ProblemConf):
-    def run_all_cases(self, *, show_details: bool = False, save_results: bool = False):
-        for case in self.cases:
-            self._run_and_compare(case, show_details=show_details, save_results=save_results)
+    def run_all_cases(self, *, show_detail: bool = False, save_result: bool = False):
+        for case_id in self.cases.keys():
+            self.run(case_id, show_detail=show_detail, save_result=save_result)
 
-    def run_one_case(self, case_id: str, *, show_details: bool = False, save_results: bool = False):
-        target_case = None
-        for case in self.cases:
-            if case_id == case['id']:
-                target_case = case
-                break
-        if target_case is None:
+    def run(self, case_id: str, *, show_detail: bool = False, save_result: bool = False):
+        try:
+            self.run_and_compare(case_id, show_detail=show_detail, save_result=save_result)
+        except KeyError:
             print('case not found: {}'.format(case_id))
-        else:
-            self._run_and_compare(target_case, show_details=show_details, save_results=save_results)
 
-    def _run_and_compare(self, case, *, show_details: bool = False, save_results: bool = False):
-        print('- with case {}: '.format(case['id']), end='')
+    def run_and_compare(self, case_id: str, *, show_detail: bool = False, save_result: bool = False):
+        print('- with case {}: '.format(case_id), end='')
 
-        if 'options' in case and 'skip' in case['options']:
-            print('[       ] SKIP'.format(case['id']))
+        if 'skip' in self.cases[case_id]['options']:
+            print('[       ] SKIP')
             return
 
-        case_id = case['id']
         src_file_path = os.path.join(SRC_DIR, self.problem_alias, 'solution.py')
         in_file_path = os.path.join(RES_DIR, self.judge_alias, self.problem_id, case_id, 'in.txt')
         out_file_path = os.path.join(RES_DIR, self.judge_alias, self.problem_id, case_id, 'out.txt')
 
-        if save_results:
+        if save_result:
             temp_result_file = None
-            result_file_path = os.path.join(TEMP_DIR, '.'.join((self.problem_alias, case['id'], 'txt')))
+            result_file_path = os.path.join(TEMP_DIR, '{case_id}.txt'.format(case_id=case_id))
         else:
             temp_result_file = tempfile.NamedTemporaryFile()
             result_file_path = temp_result_file.name
 
-        exe_time = self.run(
+        exe_time = self.execute(
             in_file_path=in_file_path,
             out_file_path=result_file_path,
             src_file_path=src_file_path)
@@ -126,17 +128,18 @@ class RunnableProblem(ProblemConf):
         if temp_result_file is not None:
             temp_result_file.close()
 
-        running_time_fmt = '{:7.4f}'.format(exe_time)
-        compare_result_fmt = 'OK' if not cmp_result else 'FAIL'
+        print('[{exe_time:7.4f}] {result_msg}'.format(
+            exe_time=exe_time,
+            result_msg='FAIL' if cmp_result else 'OK'))
 
-        print('[{}] {}'.format(running_time_fmt, compare_result_fmt))
-
-        if show_details:
+        if show_detail:
             for line in cmp_result:
                 print(line)
 
+        return exe_time, cmp_result
+
     @classmethod
-    def run(cls, in_file_path, out_file_path, src_file_path):
+    def execute(cls, in_file_path, out_file_path, src_file_path):
         start = time.time()
         os.system(
             "cat {in_file_path} | python {src_file_path} > {out_file_path}".format(
