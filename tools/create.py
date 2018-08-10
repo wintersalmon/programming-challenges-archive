@@ -2,7 +2,7 @@ import json
 import os
 
 from tools.models import ProblemConf
-from .api import APIUdebug
+from .api import APIUdebug, search_and_download_problem_pdf
 from .settings import RES_DIR, SRC_DIR, secret_settings
 
 
@@ -125,7 +125,7 @@ def create_v2(judge_alias, problem_id, problem_alias=None):
     res_dir = get_or_create_dir(RES_DIR, judge_alias, problem_id)
 
     conf_file_path = os.path.join(src_dir, '.conf.json')
-    # problem_file_path = os.path.join(src_dir, 'problem.pdf')
+    problem_file_path = os.path.join(src_dir, 'problem.pdf')
     readme_file_path = os.path.join(src_dir, 'readme.md')
     solution_file_path = os.path.join(src_dir, 'solution.py')
 
@@ -146,6 +146,13 @@ def create_v2(judge_alias, problem_id, problem_alias=None):
     cur_conf.save()
     new_file(readme_file_path)
     new_file(solution_file_path)
+
+    if os.path.exists(problem_file_path):
+        print('Duplicate', problem_file_path)
+    elif search_and_download_problem_pdf(judge_alias, problem_id, problem_file_path):
+        print('New', problem_file_path)
+    else:
+        print('Failed', problem_file_path)
 
     for case_id, case in cur_conf.cases.items():
         case_dir = get_or_create_dir(res_dir, case_id)
