@@ -1,7 +1,7 @@
 import getopt
 import sys
 
-from tools.create import create_v2
+from tools.create import create
 from tools.run import run_and_compare_v2
 from tools.show import show
 from tools.toggle import toggle
@@ -37,7 +37,7 @@ def main():
         problem_id = args[2]
         problem_alias = args[3] if len(args) == 4 else None
 
-        create_v2(judge_id, problem_id, problem_alias)
+        create(judge_id, problem_id, problem_alias)
 
     elif command == 'show':
         problem_alias = args[1]

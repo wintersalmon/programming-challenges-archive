@@ -15,7 +15,9 @@
       "options": []
     },
     "alpha": {
-      "options": []
+      "options": [
+        "custom"
+      ]
     }
   }
 }
