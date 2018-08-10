@@ -121,13 +121,13 @@ def create_v2(judge_alias, problem_id, problem_alias=None):
         cases={case['id']: {"options": list()} for case in input_list}
     )
 
-    src_dir = get_or_create_dir(SRC_DIR, problem_alias)
-    res_dir = get_or_create_dir(RES_DIR, judge_alias, problem_id)
+    source_directory = get_or_create_dir(SRC_DIR, problem_alias)
+    resource_directory = get_or_create_dir(RES_DIR, judge_alias, problem_id)
 
-    conf_file_path = os.path.join(src_dir, '.conf.json')
-    problem_file_path = os.path.join(src_dir, 'problem.pdf')
-    readme_file_path = os.path.join(src_dir, 'readme.md')
-    solution_file_path = os.path.join(src_dir, 'solution.py')
+    conf_file_path = os.path.join(source_directory, '.conf.json')
+    readme_file_path = os.path.join(source_directory, 'readme.md')
+    solution_file_path = os.path.join(source_directory, 'solution.py')
+    problem_file_path = os.path.join(resource_directory, 'problem.pdf')
 
     # check if duplicate alias exists
     if os.path.exists(conf_file_path):
@@ -155,7 +155,7 @@ def create_v2(judge_alias, problem_id, problem_alias=None):
         print('Failed', problem_file_path)
 
     for case_id, case in cur_conf.cases.items():
-        case_dir = get_or_create_dir(res_dir, case_id)
+        case_dir = get_or_create_dir(resource_directory, case_id)
 
         in_case_path = os.path.join(case_dir, 'in.txt')
         out_case_path = os.path.join(case_dir, 'out.txt')

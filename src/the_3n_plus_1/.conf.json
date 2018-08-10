@@ -12,7 +12,9 @@
       "options": []
     },
     "827013": {
-      "options": ["skip"]
+      "options": [
+        "skip"
+      ]
     },
     "827361": {
       "options": []
