@@ -4,6 +4,7 @@ import sys
 from tools.create import create_v2
 from tools.run import run_and_compare_v2
 from tools.show import show
+from tools.toggle import toggle
 
 
 def main():
@@ -46,7 +47,10 @@ def main():
         pass
 
     elif command == 'toggle':
-        pass
+        problem_alias = args[1]
+        case_id = args[2]
+        option = args[3]
+        toggle(problem_alias, case_id, option)
 
     elif command == 'add':
         pass
