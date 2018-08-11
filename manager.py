@@ -32,7 +32,7 @@ def main():
         show_usage()
         exit(0)
 
-    elif command == 'new' and len(args) in (4, 5):
+    elif command == 'new' and len(args) in (3, 4):
         judge_id = args[1]
         problem_id = args[2]
         problem_alias = args[3] if len(args) == 4 else None
@@ -44,7 +44,7 @@ def main():
         show(problem_alias)
 
     elif command == 'update':
-        pass
+        print('not implemented yet ...')
 
     elif command == 'toggle' and len(args) == 4:
         problem_alias = args[1]
@@ -53,7 +53,7 @@ def main():
         toggle(problem_alias, case_id, option)
 
     elif command == 'add':
-        pass
+        print('not implemented yet ...')
 
     elif command == 'run' and len(args) in (2, 3):
         problem_alias = args[1]
@@ -63,35 +63,6 @@ def main():
     else:
         show_usage('Invalid arguments: {}'.format(*args))
         sys.exit(1)
-
-    # judge_id = args[1]
-    # problem_id = args[2]
-    #
-    # if command == 'run':
-    #     if len(args) == 3:
-    #         run_all_cases(judge_id, problem_id, save_results=save_results, show_details=show_details)
-    #     elif len(args) == 4:
-    #         case_id = args[3]
-    #         run_one_case(judge_id, problem_id, case_id, save_results=save_results, show_details=show_details)
-    #     else:
-    #         show_usage('Invalid arguments: {}'.format(*args))
-    #         exit(1)
-    #
-    # elif command == 'new':
-    #     create(judge_id, problem_id)
-    #
-    # elif command == 'update':
-    #     if len(args) > 4:
-    #         case_id = args[3]
-    #         options = args[4:]
-    #         update(judge_id, problem_id, case_id, *options)
-    #     else:
-    #         show_usage('Invalid arguments: {}'.format(*args))
-    #         exit(2)
-    #
-    # else:
-    #     show_usage('Invalid command: {}'.format(command))
-    #     exit(3)
 
 
 def show_usage(error_msg=None):
