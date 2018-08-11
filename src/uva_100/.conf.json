@@ -1,0 +1,23 @@
+{
+  "judge_alias": "uva",
+  "problem_id": "100",
+  "cases": {
+    "809768": {
+      "options": []
+    },
+    "809769": {
+      "options": []
+    },
+    "821829": {
+      "options": []
+    },
+    "827013": {
+      "options": [
+        "skip"
+      ]
+    },
+    "827361": {
+      "options": []
+    }
+  }
+}

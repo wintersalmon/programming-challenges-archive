@@ -3,13 +3,14 @@ import os
 import tempfile
 import time
 
+from tools.models import RunnableProblem
 from .compare import compare_file_content
 from .settings import RES_DIR, SRC_DIR, TEMP_DIR
 
-
 __all__ = [
     'run_all_cases',
-    'run_one_case'
+    'run_one_case',
+    'run_and_compare_v2',
 ]
 
 
@@ -70,6 +71,15 @@ def run_and_compare(judge_id, problem_id, case_id, *, save_results=False):
         temp_result_file.close()
 
     return exe_time, cmp_result
+
+
+def run_and_compare_v2(problem_alias, case_alias=None, *, show_details=False, save_results=False):
+    problem = RunnableProblem.load(problem_alias)
+
+    if case_alias is None:
+        problem.run_all_cases(show_detail=show_details, save_result=save_results)
+    else:
+        problem.run(case_alias, show_detail=show_details, save_result=save_results)
 
 
 def run(in_file_path, out_file_path, src_file_path):
