@@ -7,16 +7,25 @@ from tools.models import ProblemConf
 from tools.settings import RES_DIR, SRC_DIR, secret_settings
 
 
-def get_or_create_dir(*paths, mode=0o755):
-    target_dir = os.path.join(*paths)
-    if not os.path.exists(target_dir):
-        cur_path = paths[0]
-        for path in paths[1:]:
-            cur_path = os.path.join(cur_path, path)
-            if not os.path.exists(cur_path):
-                os.mkdir(path=cur_path, mode=mode)
+def get_or_create_dir(file_path, mode=0o755):
+    path = os.path.dirname(file_path)
+    if not os.path.exists(path):
+        os.makedirs(file_path, mode=mode)
+    return file_path
 
-    return target_dir
+
+# def get_or_create_dir(file_path, mode=0o755):
+#     if not os.path.exists(file_path):
+#         paths = file_path.split(sep=os.sep)
+#         print(paths)
+#         cur_path = paths[0]
+#         for path in paths[1:]:
+#             print(path)
+#             cur_path = os.path.join(cur_path, path)
+#             if not os.path.exists(cur_path):
+#                 os.mkdir(path=cur_path, mode=mode)
+#
+#     return file_path
 
 
 class AutoCreateDirectoryDecorator(object):
@@ -24,7 +33,7 @@ class AutoCreateDirectoryDecorator(object):
         self.original_function = original_function
 
     def __call__(self, file_path: str, *args, **kwargs):
-        get_or_create_dir(os.path.split(file_path))
+        get_or_create_dir(file_path)
         self.original_function(file_path, *args, **kwargs)
 
 
@@ -76,13 +85,10 @@ def create(judge_alias, problem_id, problem_alias=None):
         cases={case['id']: {"options": list()} for case in input_list}
     )
 
-    source_directory = get_or_create_dir(SRC_DIR, problem_alias)
-    resource_directory = get_or_create_dir(RES_DIR, judge_alias, problem_id)
-
-    conf_file_path = os.path.join(source_directory, '.conf.json')
-    readme_file_path = os.path.join(source_directory, 'readme.md')
-    solution_file_path = os.path.join(source_directory, 'solution.py')
-    problem_file_path = os.path.join(resource_directory, 'problem.pdf')
+    conf_file_path = os.path.join(SRC_DIR, problem_alias, '.conf.json')
+    readme_file_path = os.path.join(SRC_DIR, problem_alias, 'readme.md')
+    solution_file_path = os.path.join(SRC_DIR, problem_alias, 'solution.py')
+    problem_file_path = os.path.join(RES_DIR, judge_alias, problem_id, 'problem.pdf')
 
     # check if duplicate alias exists
     if os.path.exists(conf_file_path):
@@ -125,8 +131,8 @@ def create(judge_alias, problem_id, problem_alias=None):
             print('PASS custom case {}'.format(case_id))
             continue
 
-        in_case_path = os.path.join(resource_directory, case_id, 'in.txt')
-        out_case_path = os.path.join(resource_directory, case_id, 'out.txt')
+        in_case_path = os.path.join(RES_DIR, judge_alias, problem_id, case_id, 'in.txt')
+        out_case_path = os.path.join(RES_DIR, judge_alias, problem_id, case_id, 'out.txt')
 
         if os.path.exists(in_case_path):
             print('SKIP {} in.txt'.format(case_id))

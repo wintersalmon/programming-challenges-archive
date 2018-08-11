@@ -32,7 +32,7 @@ def main():
         show_usage()
         exit(0)
 
-    elif command == 'new':
+    elif command == 'new' and len(args) in (4, 5):
         judge_id = args[1]
         problem_id = args[2]
         problem_alias = args[3] if len(args) == 4 else None
@@ -46,7 +46,7 @@ def main():
     elif command == 'update':
         pass
 
-    elif command == 'toggle':
+    elif command == 'toggle' and len(args) == 4:
         problem_alias = args[1]
         case_id = args[2]
         option = args[3]
@@ -55,14 +55,10 @@ def main():
     elif command == 'add':
         pass
 
-    elif command == 'run':
-        if len(args) in (2, 3):
-            problem_alias = args[1]
-            case_alias = args[2] if len(args) == 3 else None
-            run_and_compare_v2(problem_alias, case_alias, show_details=show_details, save_results=save_results)
-        else:
-            show_usage('Invalid arguments: {}'.format(*args))
-            exit(1)
+    elif command == 'run' and len(args) in (2, 3):
+        problem_alias = args[1]
+        case_alias = args[2] if len(args) == 3 else None
+        run_and_compare_v2(problem_alias, case_alias, show_details=show_details, save_results=save_results)
 
     else:
         show_usage('Invalid arguments: {}'.format(*args))
