@@ -1,4 +1,9 @@
-## Instructions
+# The Blocks Problem
+- Uva: 101
+
+## Solution
+
+### Instructions
 
 **INSTRUCTIONS**
 
