@@ -1,0 +1,14 @@
+{
+  "judge_alias": "uva",
+  "problem_id": "10099",
+  "cases": {
+    "810351": {
+      "options": []
+    },
+    "alpha": {
+      "options": [
+        "custom"
+      ]
+    }
+  }
+}
