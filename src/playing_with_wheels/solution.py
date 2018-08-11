@@ -1,12 +1,3 @@
-"""
-Playing With Wheels
-Uva: 10067
-programming-challenges Chapter09 PR_066
-
-
-
-"""
-
 from sys import stdin
 
 import collections
