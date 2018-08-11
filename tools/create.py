@@ -7,10 +7,16 @@ from tools.models import ProblemConf
 from tools.settings import RES_DIR, SRC_DIR, secret_settings
 
 
-def get_or_create_dir(file_path, mode=0o755):
-    path = os.path.dirname(file_path)
-    if not os.path.exists(path):
-        os.makedirs(file_path, mode=mode)
+def get_or_create_path(path, *paths, mode=0o755):
+    if paths:
+        file_path = os.path.join(path, *paths)
+    else:
+        file_path = path
+
+    base_dir = os.path.dirname(file_path)
+    if not os.path.exists(base_dir):
+        os.makedirs(base_dir, mode=mode)
+
     return file_path
 
 
@@ -33,7 +39,7 @@ class AutoCreateDirectoryDecorator(object):
         self.original_function = original_function
 
     def __call__(self, file_path: str, *args, **kwargs):
-        get_or_create_dir(file_path)
+        get_or_create_path(file_path)
         self.original_function(file_path, *args, **kwargs)
 
 
@@ -85,10 +91,10 @@ def create(judge_alias, problem_id, problem_alias=None):
         cases={case['id']: {"options": list()} for case in input_list}
     )
 
-    conf_file_path = os.path.join(SRC_DIR, problem_alias, '.conf.json')
-    readme_file_path = os.path.join(SRC_DIR, problem_alias, 'readme.md')
-    solution_file_path = os.path.join(SRC_DIR, problem_alias, 'solution.py')
-    problem_file_path = os.path.join(RES_DIR, judge_alias, problem_id, 'problem.pdf')
+    conf_file_path = get_or_create_path(SRC_DIR, problem_alias, '.conf.json')
+    readme_file_path = get_or_create_path(SRC_DIR, problem_alias, 'readme.md')
+    solution_file_path = get_or_create_path(SRC_DIR, problem_alias, 'solution.py')
+    problem_file_path = get_or_create_path(RES_DIR, judge_alias, problem_id, 'problem.pdf')
 
     # check if duplicate alias exists
     if os.path.exists(conf_file_path):
@@ -131,8 +137,8 @@ def create(judge_alias, problem_id, problem_alias=None):
             print('PASS custom case {}'.format(case_id))
             continue
 
-        in_case_path = os.path.join(RES_DIR, judge_alias, problem_id, case_id, 'in.txt')
-        out_case_path = os.path.join(RES_DIR, judge_alias, problem_id, case_id, 'out.txt')
+        in_case_path = get_or_create_path(RES_DIR, judge_alias, problem_id, case_id, 'in.txt')
+        out_case_path = get_or_create_path(RES_DIR, judge_alias, problem_id, case_id, 'out.txt')
 
         if os.path.exists(in_case_path):
             print('SKIP {} in.txt'.format(case_id))
