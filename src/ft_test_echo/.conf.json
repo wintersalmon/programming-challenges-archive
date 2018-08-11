@@ -1,0 +1,21 @@
+{
+  "judge_alias": "test",
+  "problem_id": "echo",
+  "cases": {
+    "a": {
+      "options": [
+        "custom"
+      ]
+    },
+    "b": {
+      "options": [
+        "custom"
+      ]
+    },
+    "c": {
+      "options": [
+        "custom"
+      ]
+    }
+  }
+}
