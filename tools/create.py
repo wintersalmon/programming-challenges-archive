@@ -94,7 +94,8 @@ def create(judge_alias, problem_id, problem_alias=None):
     conf_file_path = get_or_create_path(SRC_DIR, problem_alias, '.conf.json')
     readme_file_path = get_or_create_path(SRC_DIR, problem_alias, 'readme.md')
     solution_file_path = get_or_create_path(SRC_DIR, problem_alias, 'solution.py')
-    problem_file_path = get_or_create_path(RES_DIR, judge_alias, problem_id, 'problem.pdf')
+    problem_file_path = get_or_create_path(RES_DIR, judge_alias, problem_id,
+                                           '{}_{}.pdf'.format(judge_alias, problem_id))
 
     # check if duplicate alias exists
     if os.path.exists(conf_file_path):
