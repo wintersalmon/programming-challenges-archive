@@ -16,6 +16,10 @@ class UdebugAPI(object):
         self._session = requests.Session()
         self._session.auth = HTTPBasicAuth(username, password)
 
+    def is_correct_problem(self, judge_alias, problem_id):
+        response = self._session.get('/'.join((self.hostname, judge_alias, problem_id)))
+        return response.status_code == 200
+
     def get_input_list(self, judge_alias, problem_id):
         params = {
             'judge_alias': judge_alias,

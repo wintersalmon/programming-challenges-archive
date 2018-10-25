@@ -158,7 +158,12 @@ class TextIOProblem(RunnableProblem):
 class JsonIOProblem(RunnableProblem):
 
     def _run(self, case_id, *, save_output=False, detailed_output=False):
-        raise NotImplementedError
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("solution",
+                                                      self.get_solution_file_path(self.judge_alias, self.problem_alias))
+        solution = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(solution)
+        solution()
 
     @classmethod
     def get_in_case_file_path(cls, judge_id, problem_id, case_id):
@@ -224,12 +229,15 @@ class ProblemFactory(object):
 
         api = UdebugAPI(secret_settings['username'], secret_settings['password'])
 
-        try:
-            input_list = api.get_input_list(judge_id, problem_id)
+        if api.is_correct_problem(judge_id, problem_id):
             problem.io_file_type = IOFileType.TEXT
-            loaded_cases = tuple(case['id'] for case in input_list)
+            try:
+                input_list = api.get_input_list(judge_id, problem_id)
+                loaded_cases = tuple(case['id'] for case in input_list)
 
-        except APIError:
+            except APIError:
+                loaded_cases = tuple()
+        else:
             problem.io_file_type = IOFileType.JSON
             loaded_cases = tuple()
 
