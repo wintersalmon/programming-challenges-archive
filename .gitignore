@@ -1,6 +1,7 @@
 # Custom ignore files
 .secret.json
 temp
+res/
 
 
 # Created by https://www.gitignore.io/api/macos,python,pycharm
