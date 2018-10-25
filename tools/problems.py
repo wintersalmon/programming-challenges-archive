@@ -244,7 +244,6 @@ class ProblemFactory(object):
         create_json_file(cls.get_src_path(judge_alias, problem_alias, '.conf.json'))
         create_text_file(cls.get_src_path(judge_alias, problem_alias, 'solution.py'))
         create_text_file(cls.get_src_path(judge_alias, problem_alias, 'readme.md'))
-        create_empty_directory(cls.get_res_path(judge_id, problem_id))
 
         if problem.io_file_type == IOFileType.TEXT:
             for case_id in loaded_cases:
