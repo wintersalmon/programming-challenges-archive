@@ -1,0 +1,14 @@
+{
+  "judge": "uva",
+  "problem": "10099",
+  "cases": {
+    "810351": {
+      "options": []
+    },
+    "alpha": {
+      "options": [
+        "custom"
+      ]
+    }
+  }
+}
