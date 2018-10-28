@@ -1,12 +1,14 @@
 import difflib
+import importlib.util
 import json
 import os
 import tempfile
 import time
 from enum import Enum
+from time import clock
 
 from tools.errors import APIError
-from tools.files import create_empty_directory, create_text_file, create_json_file, lazy_create_text_file
+from tools.files import create_text_file, create_json_file, lazy_create_text_file
 from tools.settings import SRC_DIR, RES_DIR, TEMP_DIR, secret_settings
 from tools.udebug import UdebugAPI, find_and_get_pdf_content
 
@@ -157,21 +159,43 @@ class TextIOProblem(RunnableProblem):
 
 class JsonIOProblem(RunnableProblem):
 
+    @staticmethod
+    def timeit(method):
+        def timed(*args, **kw):
+            time_start = clock()
+            result = method(*args, **kw)
+            time_end = clock()
+            return time_end - time_start, result
+
+        return timed
+
     def _run(self, case_id, *, save_output=False, detailed_output=False):
-        import importlib.util
-        spec = importlib.util.spec_from_file_location("solution",
-                                                      self.get_solution_file_path(self.judge_alias, self.problem_alias))
-        solution = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(solution)
-        solution()
+        print('- with case {}: '.format(case_id), end='')
+
+        if 'skip' in self.cases[case_id]['options']:
+            print('[       ] SKIP')
+            return
+
+        src_file_path = self.get_solution_file_path(self.judge_alias, self.problem_alias)
+        case_file_path = self.get_case_file_path(self.judge_id, self.problem_id, case_id)
+
+        spec = importlib.util.spec_from_file_location("solution", src_file_path)
+        target = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(target)
+        solution = self.timeit(target.solution)
+
+        with open(case_file_path, 'r') as case_file:
+            case_value = json.load(case_file)
+            exe_time, exe_result = solution(*case_value['args'])
+            result_msg = 'OK' if exe_result == case_value['result'] else 'FAIL'
+
+        print('[{exe_time:7.4f}] {result_msg}'.format(
+            exe_time=exe_time,
+            result_msg=result_msg))
 
     @classmethod
-    def get_in_case_file_path(cls, judge_id, problem_id, case_id):
-        return os.path.join(RES_DIR, judge_id, problem_id, case_id, 'in.json')
-
-    @classmethod
-    def get_out_case_file_path(cls, judge_id, problem_id, case_id):
-        return os.path.join(RES_DIR, judge_id, problem_id, case_id, 'out.json')
+    def get_case_file_path(cls, judge_id, problem_id, case_id):
+        return os.path.join(SRC_DIR, judge_id, problem_id, 'res', '{case_id}.json'.format(case_id=case_id))
 
 
 class ProblemFactory(object):

@@ -138,8 +138,8 @@ class CommandExecute(BaseCommand):
             else:
                 problem.run_all(save_output=self._save_output, detailed_output=self._detailed_output)
 
-        except FileNotFoundError:
-            print('Problem Not Found')
+        except FileNotFoundError as e:
+            print('Problem Not Found', e)
 
 
 class CommandSkipCase(BaseCommand):
