@@ -2,19 +2,10 @@
   "judge": "uva",
   "problem": "10004",
   "cases": {
-    "810309": {
-      "options": []
-    },
-    "833508": {
-      "options": []
-    },
-    "836416": {
-      "options": []
-    },
-    "alpha": {
-      "options": [
-        "custom"
-      ]
-    }
-  }
+    "810309": {},
+    "833508": {},
+    "836416": {},
+    "alpha": {}
+  },
+  "io_file_type": "text"
 }

@@ -1,5 +1,4 @@
 import getopt
-import re
 from enum import Enum
 
 from tools.errors import InvalidCommandError
@@ -7,6 +6,9 @@ from tools.problems import ProblemFactory
 
 
 class BaseCommand(object):
+    PATH_SEP = '/'
+    CASE_SEP = ':'
+
     HELP_MESSAGE = "EMPTY"
 
     def __init__(self, *args):
@@ -23,14 +25,15 @@ class BaseCommand(object):
         print(cls.HELP_MESSAGE)
 
     @classmethod
-    def slash_separated_values(cls, target):
-        result = re.match(r'^(?P<judge>[-_.\w]+)(/(?P<problem>[-_.\w]+))(/(?P<case>[-_.\w]+))?$', target)
+    def retrieve_url(cls, target):
+        path = target.split(cls.PATH_SEP)
 
-        judge = result['judge']
-        problem = result['problem']
-        case = result['case']
+        if cls.CASE_SEP in path[-1]:
+            path[-1], case = path[-1].split(cls.CASE_SEP)
+        else:
+            case = None
 
-        return judge, problem, case
+        return path, case
 
 
 class CommandList(BaseCommand):
@@ -42,56 +45,52 @@ class CommandList(BaseCommand):
             self.display_help_message('Too many Parameters: {}'.format(self._args))
             raise InvalidCommandError
 
-        try:
-            judge, problem, __ = self.slash_separated_values(args[0])
-        except TypeError:
+        path, __ = self.retrieve_url(args[0])
+        if len(path) == 2:
+            self._judge, self._problem = path
+        else:
             self.display_help_message('Invalid Parameter: {}'.format(args[0]))
             raise InvalidCommandError
-
-        self._judge = judge
-        self._problem = problem
 
     def run(self):
         try:
             problem = ProblemFactory.load(self._judge, self._problem)
-            print(problem)
-            for case_id, case_options in problem.cases.items():
-                print('  {}: {}'.format(case_id, case_options['options']))
+            problem.display_status()
+            for case_id, case in problem.cases.items():
+                print('  {}: {}'.format(case_id, case))
 
         except FileNotFoundError:
             print('Problem Not Found')
 
 
 class CommandCreate(BaseCommand):
-    HELP_MESSAGE = "$ python pca.py create [judge_id]/[problem_id] [judge_alias]/[problem_alias]"
+    HELP_MESSAGE = "$ python pca.py create [judge_alias]/[problem_alias] [judge_id]/[problem_id]"
 
     def __init__(self, *args):
         super().__init__(*args)
         if len(args) != 2:
-            self.display_help_message('Too many Parameters: {}'.format(self._args))
+            self.display_help_message('Invalid Parameters: {}'.format(self._args))
             raise InvalidCommandError
 
-        try:
-            judge_id, problem_id, __ = self.slash_separated_values(args[0])
-        except TypeError:
-            self.display_help_message('Invalid Parameter: {}'.format(args[0]))
+        src_path, __ = self.retrieve_url(args[0])
+
+        if len(src_path) == 2:
+            self._judge_alias, self._problem_alias = src_path
+        else:
+            self.display_help_message('Invalid Parameters: {}'.format(self._args))
             raise InvalidCommandError
 
-        try:
-            judge_alias, problem_alias, __ = self.slash_separated_values(args[1])
-        except TypeError:
-            self.display_help_message('Invalid Parameter: {}'.format(args[1]))
+        res_path, __ = self.retrieve_url(args[1])
+
+        if len(res_path) == 2:
+            self._judge_id, self._problem_id = res_path
+        else:
+            self.display_help_message('Invalid Parameters: {}'.format(self._args))
             raise InvalidCommandError
-
-        self._judge_id = judge_id
-        self._problem_id = problem_id
-
-        self._judge_alias = judge_alias
-        self._problem_alias = problem_alias
 
     def run(self):
         try:
-            ProblemFactory.create(self._judge_id, self._problem_id, self._judge_alias, self._problem_alias)
+            ProblemFactory.create(self._judge_alias, self._problem_alias, self._judge_id, self._problem_id)
         except FileExistsError as e:
             print(e)
 
@@ -111,15 +110,15 @@ class CommandExecute(BaseCommand):
             self.display_help_message('Too many Parameters: {}'.format(self._args))
             raise InvalidCommandError
 
-        try:
-            judge, problem, case = self.slash_separated_values(args[0])
-        except TypeError:
+        src_path, case = self.retrieve_url(args[0])
+
+        if len(src_path) == 2:
+            self._judge, self._problem = src_path
+            self._case = case
+        else:
             self.display_help_message('Invalid Parameter: {}'.format(args[0]))
             raise InvalidCommandError
 
-        self._judge = judge
-        self._problem = problem
-        self._case = case
         self._detailed_output = False
         self._save_output = False
 
@@ -136,10 +135,10 @@ class CommandExecute(BaseCommand):
             if self._case:
                 problem.run(self._case, save_output=self._save_output, detailed_output=self._detailed_output)
             else:
-                problem.run_all(save_output=self._save_output, detailed_output=self._detailed_output)
+                problem.run(save_output=self._save_output, detailed_output=self._detailed_output)
 
-        except FileNotFoundError:
-            print('Problem Not Found')
+        except FileNotFoundError as e:
+            print('Problem Not Found', e)
 
 
 class CommandSkipCase(BaseCommand):
@@ -151,33 +150,29 @@ class CommandSkipCase(BaseCommand):
             self.display_help_message('Too many Parameters: {}'.format(self._args))
             raise InvalidCommandError
 
-        try:
-            judge, problem, case = self.slash_separated_values(args[0])
-        except TypeError:
+        src_path, case = self.retrieve_url(args[0])
+
+        if len(src_path) == 2:
+            self._judge, self._problem = src_path
+            self._case = case
+        else:
             self.display_help_message('Invalid Parameter: {}'.format(args[0]))
             raise InvalidCommandError
-
-        self._judge = judge
-        self._problem = problem
-        self._case = case
 
     def run(self):
         try:
             problem = ProblemFactory.load(self._judge, self._problem)
 
-            if 'skip' in problem.cases[self._case]['options']:
-                problem.cases[self._case]['options'].remove('skip')
-            else:
-                problem.cases[self._case]['options'].append('skip')
-
+            prev_status = problem.cases[self._case].skip
+            problem.cases[self._case].skip = not prev_status
             problem.save()
 
-            print(problem)
-            for case_id, case_options in problem.cases.items():
+            problem.display_status()
+            for case_id, case in problem.cases.items():
                 if case_id == self._case:
-                    print(' *{}: {}'.format(case_id, case_options['options']))
+                    print(' *{}: {}'.format(case_id, case))
                 else:
-                    print('  {}: {}'.format(case_id, case_options['options']))
+                    print('  {}: {}'.format(case_id, case))
 
         except FileNotFoundError:
             print('Problem Not Found')
@@ -231,7 +226,7 @@ class CommandFactory(object):
     
     $ python pca.py list <judge_alias>/<problem_alias>
     
-    $ python pca.py create <judge_id>/<problem_id> <judge_alias>/<problem_alias>
+    $ python pca.py create [judge_alias]/[problem_alias] [judge_id]/[problem_id]
     
     $ python pca.py [-sd] [--save --detailed] execute <judge_alias>/<problem_alias>/<case_id>
     

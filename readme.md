@@ -4,9 +4,6 @@
 	* [**개요**](#개요)
 	* [**기술 스택**](#기술-스택)
 	* [**설명**](#설명)
-* 프로젝트 구조
-    * [**디렉토리**](#프로젝트-디렉토리)
-	* [**파일포맷**](#프로젝트-파일포맷)
 * 프로젝트 사용법
 	* [**설치방법**](#설치방법)
 	* [**명령어**](#명령어)
@@ -17,6 +14,9 @@
 	* [**SKIPCASE**](#command-skip-case) 특정 케이스 생략 설정
 	* [**CREATECASE**](#command-create-case) 새로운 케이스 생성
 	* [**REMOVECASE**](#command-remove-case) 케이스 삭제
+* 프로젝트 구조
+    * [**디렉토리**](#프로젝트-디렉토리)
+	* [**파일포맷**](#프로젝트-파일포맷)
 * [**ToDo**](#ToDo)
 
 ## 프로젝트 소개
@@ -49,46 +49,6 @@
 	- 온라인 심사 에서는 사용할 수 없는 방법으로 문제를 풀 수 있다
 	- 자주 사용하는 기능을 라이브러리로 만들고 import 해서 사용할 수 있다
 	- 비슷한 풀이를 참조하고 같은 실수를 반복하는 것을 방지할 수 있다
-
-## 프로젝트 구조
-### 프로젝트 디렉토리
-```
-
-/res  # 문제 실행에 필요한 리소스 파일을 저장하는 디렉토리 (입력_파일, 출력_파일, 문제_PDF_파일)
-    /uva
-    	/100
-    	    /827361
-                in.txt
-                out.txt
-    		uva_100.pdf
-
-/src  # 문제 소스 파일, 문제 해설 파일, 문제 케이스 설정 파일을 보관하는 디렉토리
-    /uva
-        /the_3n_plus_1
-            .conf.json
-            readme.md
-            solution.py
-
-/temp  # 문제 실행 결과를 저장하는 디렉토리
-
-/tools  # 프로젝트 스크립트 툴 보관 디렉토리
-
-.secret.json  # udebug api 사용을 위한 사용자 계정 정보를 저장하는 비밀 파일
-pca.py  # 스크립트 실행 관리자
-readme.md
-
-```
-
-### 프로젝트 파일포맷
-| name                            | path                                            | description |
-| ------------------------------- | ----------------------------------------------- | ----------- |
-| `in.txt`                        | `RES_DIR/{judge_id}/{problem_id}/{case_id}/`    | 케이스 입력 |
-| `out.txt`                       | `RES_DIR/{judge_id}/{problem_id}/{case_id}/`    | 케이스 출력 |
-| `(judge_id)_(problem_id).pdf`   | `RES_DIR/{judge_id}/{problem_id}/`              | 문제 PDF |
-| `(problem_alias).(case_id).txt` | `TEMP_DIR/`                                     | 케이스 출력 결과 |
-| `.conf.json`                    | `SRC_DIR/{judge_alias}/{problem_alias}/`        | 문제 설정 파일 |
-| `readme.md`                     | `SRC_DIR/{judge_alias}/{problem_alias}/`        | 문제 풀이 해설 |
-| `solution.py`                   | `SRC_DIR/{judge_alias}/{problem_alias}/`        | 풀이 풀이 |
 
 
 ## 프로젝트 사용 방법
@@ -243,6 +203,45 @@ readme.md
 ```
     $ python pca.py removecase <judge_alias>/<problem_alias>/<case_id>
 ```
+
+## 프로젝트 구조
+### 프로젝트 디렉토리
+```
+/res  # 문제 실행에 필요한 리소스 파일을 저장하는 디렉토리 (입력_파일, 출력_파일, 문제_PDF_파일)
+    /uva
+    	/100
+    	    /827361
+                in.txt
+                out.txt
+    		uva_100.pdf
+
+/src  # 문제 소스 파일, 문제 해설 파일, 문제 케이스 설정 파일을 보관하는 디렉토리
+    /uva
+        /the_3n_plus_1
+            .conf.json
+            readme.md
+            solution.py
+
+/temp  # 문제 실행 결과를 저장하는 디렉토리
+
+/tools  # 프로젝트 스크립트 툴 보관 디렉토리
+
+.secret.json  # udebug api 사용을 위한 사용자 계정 정보를 저장하는 비밀 파일
+pca.py  # 스크립트 실행 관리자
+readme.md
+```
+
+### 프로젝트 파일포맷
+| name                            | path                                            | description |
+| ------------------------------- | ----------------------------------------------- | ----------- |
+| `in.txt`                        | `RES_DIR/{judge_id}/{problem_id}/{case_id}/`    | 케이스 입력 |
+| `out.txt`                       | `RES_DIR/{judge_id}/{problem_id}/{case_id}/`    | 케이스 출력 |
+| `(judge_id)_(problem_id).pdf`   | `RES_DIR/{judge_id}/{problem_id}/`              | 문제 PDF |
+| `(problem_alias).(case_id).txt` | `TEMP_DIR/`                                     | 케이스 출력 결과 |
+| `.conf.json`                    | `SRC_DIR/{judge_alias}/{problem_alias}/`        | 문제 설정 파일 |
+| `readme.md`                     | `SRC_DIR/{judge_alias}/{problem_alias}/`        | 문제 풀이 해설 |
+| `solution.py`                   | `SRC_DIR/{judge_alias}/{problem_alias}/`        | 풀이 풀이 |
+
 
 
 ## ToDo

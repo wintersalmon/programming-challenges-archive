@@ -1,0 +1,15 @@
+{
+  "judge": "ft",
+  "problem": "echo",
+  "cases": {
+    "alpha": {
+      "custom": true
+    },
+    "beta": {
+      "custom": true
+    },
+    "gamma": {
+      "custom": true
+    }
+  }
+}

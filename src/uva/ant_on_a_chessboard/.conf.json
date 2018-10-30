@@ -2,8 +2,7 @@
   "judge": "uva",
   "problem": "10161",
   "cases": {
-    "810242": {
-      "options": []
-    }
-  }
+    "810242": {}
+  },
+  "io_file_type": "text"
 }
